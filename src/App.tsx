@@ -191,13 +191,18 @@ function App() {
             Explorer <ArrowUpRight />
           </a>
           {wallet.address ? (
-            <button className="wallet-button connected" type="button" onClick={wallet.disconnect}>
-              <span className="status-dot" /> {shortAddress(wallet.address, 5)}
-            </button>
+            <div className="wallet-control">
+              <button className="wallet-button connected" type="button" onClick={wallet.disconnect}>
+                <span className="status-dot" /> {shortAddress(wallet.address, 5)}
+              </button>
+            </div>
           ) : (
-            <button className="wallet-button" type="button" onClick={wallet.connect} disabled={wallet.connecting}>
-              {wallet.connecting ? 'Connecting…' : 'Connect Nightly'}
-            </button>
+            <div className="wallet-control">
+              <button className="wallet-button" type="button" onClick={wallet.connect} disabled={wallet.connecting}>
+                {wallet.connecting ? 'Detecting Nightly…' : 'Connect Nightly'}
+              </button>
+              {wallet.error && <span className="wallet-error" role="alert">{wallet.error}</span>}
+            </div>
           )}
         </div>
       </header>

@@ -14,11 +14,18 @@ export function useNightlyWallet() {
   const [, render] = useState(0)
 
   const discover = useCallback((): WalletAdapterCompatibleStandardWallet | null => {
-    const wallet = getWallets()
+    const registeredWallet = getWallets()
       .get()
       .filter(isWalletAdapterCompatibleStandardWallet)
       .find((candidate) => candidate.name.toLowerCase().includes('nightly'))
-    return wallet ?? null
+
+    if (registeredWallet) return registeredWallet
+
+    const injected = window.nightly?.solana
+    const directWallet = toCompatibleWallet(injected)
+    if (directWallet) return directWallet
+
+    return toCompatibleWallet(injected?.standardWallet)
   }, [])
 
   const available = Boolean(discover() || window.nightly?.solana)
@@ -52,13 +59,13 @@ export function useNightlyWallet() {
     setConnecting(true)
     setError(null)
     try {
-      await requestNightlyCookieNetwork()
-      const wallet = discover()
+      const wallet = await waitForNightly(discover)
       if (!wallet) {
-        throw new Error('Nightly was not detected. Install or unlock the Nightly browser extension.')
+        throw new Error('Nightly was not detected. Install the browser extension, unlock it, then reload this page.')
       }
       const nextAdapter = new StandardWalletAdapter({ wallet })
       await nextAdapter.connect()
+      await requestNightlyCookieNetwork()
       setAdapter(nextAdapter)
     } catch (reason) {
       setError(toMessage(reason))
@@ -91,4 +98,23 @@ export function useNightlyWallet() {
 
 function toMessage(reason: unknown): string {
   return reason instanceof Error ? reason.message : 'Nightly could not connect.'
+}
+
+function toCompatibleWallet(candidate: unknown): WalletAdapterCompatibleStandardWallet | null {
+  if (!candidate || typeof candidate !== 'object') return null
+  const wallet = candidate as WalletAdapterCompatibleStandardWallet
+  return isWalletAdapterCompatibleStandardWallet(wallet) ? wallet : null
+}
+
+async function waitForNightly(
+  discover: () => WalletAdapterCompatibleStandardWallet | null,
+  timeoutMs = 1_500,
+): Promise<WalletAdapterCompatibleStandardWallet | null> {
+  const startedAt = Date.now()
+  let wallet = discover()
+  while (!wallet && Date.now() - startedAt < timeoutMs) {
+    await new Promise((resolve) => window.setTimeout(resolve, 100))
+    wallet = discover()
+  }
+  return wallet
 }

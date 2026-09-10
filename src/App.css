@@ -3,6 +3,8 @@
 .brand { display: inline-flex; align-items: center; gap: 11px; color: var(--gold); text-decoration: none; font: 700 13px/1 'DM Mono', monospace; letter-spacing: .15em; }
 .brand svg { width: 29px; height: 29px; }
 .top-actions { display: flex; align-items: center; gap: 18px; }
+.wallet-control { position: relative; display: flex; justify-content: flex-end; }
+.wallet-error { position: absolute; z-index: 10; top: calc(100% + 9px); right: 0; width: min(330px, calc(100vw - 28px)); padding: 9px 11px; border: 1px solid #8d392b; border-radius: 6px; background: #2b1915; color: #ffd8cf; box-shadow: 0 10px 30px #0008; font-size: 11px; line-height: 1.45; text-transform: none; letter-spacing: 0; }
 .quiet-link { display: flex; gap: 5px; align-items: center; color: #b8ab9d; font-size: 13px; text-decoration: none; }
 .quiet-link:hover { color: var(--cream); }
 .quiet-link svg, .bridge-card svg, .history-list > a > svg, .receipt a svg { width: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; }
