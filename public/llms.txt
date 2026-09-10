@@ -1,0 +1,18 @@
+# CrumbProof
+
+> CrumbProof creates and verifies tamper-evident SHA-256 proof receipts on Cookie Chain.
+
+Files and text are hashed locally in the browser. Only the fingerprint and public metadata are included in a signed Memo program transaction.
+
+## Main actions
+
+- Connect a Nightly Wallet configured for Cookie Chain.
+- Create a fingerprint for a local file or text.
+- Sign and confirm the proof transaction.
+- Verify a receipt by Cookie Chain transaction signature.
+
+## Network
+
+- [Cookie Chain RPC](https://rpc.cookiescan.io): public JSON-RPC endpoint.
+- [CookieScan](https://cookiescan.io): transaction explorer.
+- [Cookie Chain documentation](https://docs.cookiechain.wtf): network and developer docs.
